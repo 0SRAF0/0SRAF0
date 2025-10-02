@@ -1,3 +1,4 @@
+# IDAE 1: Conversation Coach
 Improve how you talk in specific scenarios: Professional, Romantic, or Casual. No vibe-judging. Just concrete fixes.
 
 ## **How it works**
