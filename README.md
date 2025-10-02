@@ -204,4 +204,152 @@ Implementation checklist (ordered)1) Auth + Google Calendar connector with read-
 - Advanced optimization (ILP/CP-SAT) for complex weeks.
 - Social load modeling based on intro/extro and recovery time.
 
-Want me to tailor stack choices (e.g., Swift/Kotlin native, Python vs TypeScript, host choices) and generate initial schema plus API endpoint specs?
+# Idea 2: AI-Powered Group Travel Planning System
+**Enterprise Agentic Platform for Collaborative Trip Coordination**
+Eliminate the chaos of group travel planning. This system collects preferences, generates personalized recommendations, facilitates democratic decision-making, and delivers actionable itineraries—all autonomously.
+
+## How It Works
+1. **Create a trip and add participants**
+2. **System sends SMS surveys** to collect preferences (budget, activities, pace, dietary needs, accessibility)
+3. **AI analyzes responses** and generates destination recommendations with real-time pricing
+4. **Group votes** using ranked-choice system to reach consensus
+5. **System builds itinerary** with bookings, activities, and optimization
+
+## What You Get
+### 1. Smart Recommendations
+- **Destination matches** based on aggregated group preferences
+- **Conflict indicators**: highlights where preferences diverge (e.g., budget vs. luxury split)
+- **Seasonality awareness**: suggests optimal travel windows
+- **Real-time pricing**: live flight, hotel, and activity costs from multiple sources
+- **Trade-off analysis**: "Save $800 by traveling 2 weeks earlier" or "Add $200/person for beachfront"
+
+### 2. Democratic Consensus
+- **Ranked-choice voting interface** with visual comparisons
+- **Consensus score**: shows alignment percentage for each destination
+- **Alternative suggestions**: if no clear winner, system proposes compromise options
+- **Instant runoff results**: transparent vote tallying with explanations
+
+### 3. Actionable Itineraries
+- **Day-by-day plans** with optimized routing
+- **Booking links** for approved options with price locks
+- **Group coordination**: shared calendar, task assignments (who books flights, who reserves restaurants)
+- **Budget tracking**: live spend vs. plan with alerts
+
+## Inputs & Outputs
+### Inputs
+- **Trip details**: destination type (beach, city, adventure, cultural), duration, dates (flexible or fixed)
+- **Participants**: names, contacts, dietary restrictions, accessibility needs
+- **Survey responses**: budget range, activity preferences, pace (relaxed/moderate/packed), must-haves, deal-breakers
+- **Constraints**: visa requirements, travel time limits, blackout dates
+
+### Outputs
+- **Preference summary**: group trends in one sentence ("Budget-conscious group favoring cultural experiences with moderate activity")
+- **Destination shortlist**: 3-5 options with scoring breakdown (preference match %, cost, travel time)
+- **Pricing dashboard**: real-time costs for flights, lodging, activities per destination
+- **Voting results**: ranked outcomes with consensus metrics
+- **Final itinerary**: day-by-day plan with bookings, maps, contact info, contingencies
+
+## Implementation Flow
+### 1. Trip Initialization
+- User creates trip → Orchestrator Agent spins up workflow
+- Sends SMS surveys via Twilio API
+- Stores responses in PostgreSQL
+
+### 2. Preference Processing
+- Survey responses hit message queue (RabbitMQ/Kafka)
+- **Preference Analysis Agent** (microservice) processes them:
+  - Calls LLM (GPT-4/Claude) to extract patterns
+  - Stores embeddings in vector DB for semantic matching
+  - Outputs: preference_package JSON
+
+### 3. Parallel Research Phase
+Orchestrator triggers two agents simultaneously:
+
+**Destination Research Agent:**
+- Queries vector DB for similar destinations
+- Calls external APIs (visa requirements, weather)
+- Returns shortlist
+
+**Real-Time Pricing Agent:**
+- Polls Amadeus/Skyscanner APIs every 6 hours
+- Caches in Redis with TTL
+- Pushes updates via WebSocket to frontend
+
+### 4. Voting
+- Frontend displays options with live pricing
+- **Voting Coordinator Agent** runs instant runoff algorithm
+- If consensus < 70% → triggers **Conflict Resolution Agent**
+- Stores votes in PostgreSQL, updates state in Redis
+
+### 5. Itinerary Generation
+- **Itinerary Generation Agent** (long-running task on Celery):
+  - Calls LLM with structured prompt (winning destination + preferences)
+  - Uses Google Maps API for routing optimization
+  - Generates day-by-day plan
+- **Budget Optimization Agent** reviews for savings
+- **Verifier Agent** validates (timing, availability, accessibility)
+
+### 6. Delivery
+- Final itinerary stored in PostgreSQL
+- Booking links generated via affiliate APIs
+- Users notified via SMS/email
+- Real-time collaboration via WebSocket (comments, task assignments)
+
+## Tech Stack in Action
+- **Agent Runtime**: LangGraph orchestrates agent calls, manages state transitions
+- **Communication**: gRPC for inter-agent calls (faster than REST)
+- **State Management**: Redis for session state, PostgreSQL for persistent data
+- **Async Tasks**: Celery workers handle long-running agent operations
+- **APIs**: FastAPI microservices, one per agent
+- **Frontend**: Next.js with WebSocket client for live updates
+- **Deployment**: Kubernetes pods (each agent = separate deployment), auto-scales based on queue depth
+
+## Agent Architecture
+### Core Agents
+
+1. **Orchestrator Agent**
+   - Coordinates workflow across all agents
+   - Manages state transitions
+   - Handles failures and retries
+
+2. **Preference Analysis Agent**
+   - Processes survey responses using NLP
+   - Identifies patterns and conflicts
+   - Generates preference_package for downstream agents
+
+3. **Destination Research Agent**
+   - Searches destinations using vector similarity
+   - Validates visa requirements and travel advisories
+   - Checks accessibility infrastructure
+
+4. **Real-Time Pricing Agent**
+   - Continuously monitors flight/hotel pricing
+   - Detects price drops and trends
+   - Alerts users of deals
+
+5. **Voting Coordinator Agent**
+   - Manages ranked-choice voting
+   - Calculates consensus scores
+   - Triggers conflict resolution if needed
+
+6. **Conflict Resolution Agent**
+   - Analyzes vote splits
+   - Proposes compromise destinations
+   - Suggests modified trip structures
+
+7. **Itinerary Generation Agent**
+   - Builds detailed day-by-day plans
+   - Optimizes routing and timing
+   - Accounts for accessibility needs
+
+8. **Budget Optimization Agent**
+   - Identifies cost-saving opportunities
+   - Suggests quality alternatives within budget
+   - Tracks spending against plan
+
+9. **Verifier Agent**
+   - Validates itinerary feasibility
+   - Checks booking availability
+   - Ensures accessibility requirements met
+
+
