@@ -217,26 +217,6 @@ Eliminate the chaos of group travel planning. This system collects preferences, 
 4. **Group votes** using ranked-choice system to reach consensus
 5. **System builds itinerary** with bookings, activities, and optimization
 
-## What You Get
-### 1. Smart Recommendations
-- **Destination matches** based on aggregated group preferences
-- **Conflict indicators**: highlights where preferences diverge (e.g., budget vs. luxury split)
-- **Seasonality awareness**: suggests optimal travel windows
-- **Real-time pricing**: live flight, hotel, and activity costs from multiple sources
-- **Trade-off analysis**: "Save $800 by traveling 2 weeks earlier" or "Add $200/person for beachfront"
-
-### 2. Democratic Consensus
-- **Ranked-choice voting interface** with visual comparisons
-- **Consensus score**: shows alignment percentage for each destination
-- **Alternative suggestions**: if no clear winner, system proposes compromise options
-- **Instant runoff results**: transparent vote tallying with explanations
-
-### 3. Actionable Itineraries
-- **Day-by-day plans** with optimized routing
-- **Booking links** for approved options with price locks
-- **Group coordination**: shared calendar, task assignments (who books flights, who reserves restaurants)
-- **Budget tracking**: live spend vs. plan with alerts
-
 ## Inputs & Outputs
 ### Inputs
 - **Trip details**: destination type (beach, city, adventure, cultural), duration, dates (flexible or fixed)
