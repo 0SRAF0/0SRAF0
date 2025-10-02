@@ -204,6 +204,8 @@ Implementation checklist (ordered)1) Auth + Google Calendar connector with read-
 - Advanced optimization (ILP/CP-SAT) for complex weeks.
 - Social load modeling based on intro/extro and recovery time.
 
+
+
 # Idea 2: AI-Powered Group Travel Planning System
 **Enterprise Agentic Platform for Collaborative Trip Coordination**
 Eliminate the chaos of group travel planning. This system collects preferences, generates personalized recommendations, facilitates democratic decision-making, and delivers actionable itineraries—all autonomously.
